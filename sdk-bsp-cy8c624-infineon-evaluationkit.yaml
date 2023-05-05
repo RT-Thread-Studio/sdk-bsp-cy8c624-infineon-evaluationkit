@@ -11,7 +11,7 @@ board:
     Cortex M0+ CPU，带单周期乘法和MPU，可以充分发挥 PSoC6 双核芯片性能。
   emulator_machine: ''
   large_image: documents/images/Infineon.png
-  name: CY8C624-INFINEON-EVALUATIONKIT
+  name: PSOC62-IFX-EVAL-KIT
   price_cn: N/A CNY
   price_global: N/A USD
   sale_contact_cn: N/A
@@ -56,7 +56,7 @@ features_zh:
 - 带有 KitProg3 的板载调试器/编程器
 pkg_type: Board_Support_Packages
 pkg_vendor: RT-Thread
-pkg_version: 1.0.0
+pkg_version: 1.0.1
 template_projects:
 - builtin_files:
   - files_and_folders:
