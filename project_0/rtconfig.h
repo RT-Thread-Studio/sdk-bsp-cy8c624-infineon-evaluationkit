@@ -48,7 +48,8 @@
 #define RT_USING_CONSOLE
 #define RT_CONSOLEBUF_SIZE 128
 #define RT_CONSOLE_DEVICE_NAME "uart6"
-#define RT_VER_NUM 0x50000
+#define RT_VER_NUM 0x50001
+#define RT_USING_HW_ATOMIC
 #define RT_USING_CPU_FFS
 #define ARCH_ARM
 #define ARCH_ARM_CORTEX_M
@@ -73,6 +74,9 @@
 #define MSH_USING_BUILT_IN_COMMANDS
 #define FINSH_USING_DESCRIPTION
 #define FINSH_ARG_MAX 10
+
+/* DFS: device virtual file system */
+
 
 /* Device Drivers */
 
@@ -142,9 +146,6 @@
 
 
 /* u8g2: a monochrome graphic library */
-
-
-/* PainterEngine: A cross-platform graphics application framework written in C language */
 
 
 /* tools packages */
@@ -219,18 +220,11 @@
 
 /* Other */
 
+
 /* Signal IO */
 
 
 /* Uncategorized */
-
-/* Privated Packages of RealThread */
-
-
-/* Network Utilities */
-
-
-/* RT-Thread Smart */
 
 #define SOC_FAMILY_IFX
 #define SOC_SERIES_IFX_PSOC62

@@ -18,7 +18,7 @@ board:
   sale_contact_global: N/A
   small_image: documents/images/small_20230323101130.png
   vendor: Infineon
-  version: 1.0.0
+  version: 1.0.2
 chip:
   chip_name: CY8C624ABZI
   clock_source: HSE
