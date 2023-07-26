@@ -59,7 +59,7 @@ features_zh:
 - 带有 KitProg3 的板载调试器/编程器
 pkg_type: Board_Support_Packages
 pkg_vendor: RT-Thread
-pkg_version: 1.0.3
+pkg_version: 1.0.4
 template_projects:
 - builtin_files:
   - files_and_folders:
