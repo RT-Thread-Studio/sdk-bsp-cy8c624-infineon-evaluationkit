@@ -40,6 +40,9 @@
 #include <poll.h>
 #include <sys/select.h>
 #include <dfs_file.h>
+#ifdef RT_USING_DFS_V2
+#include <dfs_dentry.h>
+#endif
 #include <unistd.h>
 #include <stdio.h> /* rename() */
 #include <sys/stat.h>
@@ -75,6 +78,8 @@
 #include <tty.h>
 #include "lwp_ipc_internal.h"
 #include <sched.h>
+
+#include <sys/sysinfo.h>
 
 #ifndef GRND_NONBLOCK
 #define GRND_NONBLOCK   0x0001
@@ -480,6 +485,7 @@ sysret_t sys_open(const char *name, int flag, ...)
     int ret = -1;
     rt_size_t len = 0;
     char *kname = RT_NULL;
+    mode_t mode = 0;
 
     if (!lwp_user_accessable((void *)name, 1))
     {
@@ -498,8 +504,16 @@ sysret_t sys_open(const char *name, int flag, ...)
         return -ENOMEM;
     }
 
+    if ((flag & O_CREAT) || (flag & O_TMPFILE) == O_TMPFILE)
+    {
+        va_list ap;
+        va_start(ap, flag);
+        mode = va_arg(ap, mode_t);
+        va_end(ap);
+    }
+
     lwp_get_from_user(kname, (void *)name, len + 1);
-    ret = open(kname, flag, 0);
+    ret = open(kname, flag, mode);
     if (ret < 0)
     {
         ret = GET_ERRNO();
@@ -509,11 +523,23 @@ sysret_t sys_open(const char *name, int flag, ...)
 
     return ret;
 #else
+    int ret;
+    mode_t mode = 0;
+
     if (!lwp_user_accessable((void *)name, 1))
     {
         return -EFAULT;
     }
-    int ret = open(name, flag, 0);
+
+    if ((flag & O_CREAT) || (flag & O_TMPFILE) == O_TMPFILE)
+    {
+        va_list ap;
+        va_start(ap, flag);
+        mode = va_arg(ap, mode_t);
+        va_end(ap);
+    }
+
+    ret = open(name, flag, mode);
     return (ret < 0 ? GET_ERRNO() : ret);
 #endif
 }
@@ -2621,6 +2647,54 @@ sysret_t sys_stat(const char *file, struct stat *buf)
     return ret;
 }
 
+sysret_t sys_lstat(const char *file, struct stat *buf)
+{
+    int ret = 0;
+    int err;
+    size_t len;
+    size_t copy_len;
+    char *copy_path;
+    struct stat statbuff = {0};
+
+    if (!lwp_user_accessable((void *)buf, sizeof(struct stat)))
+    {
+        return -EFAULT;
+    }
+
+    len = lwp_user_strlen(file, &err);
+    if (err)
+    {
+        return -EFAULT;
+    }
+
+    copy_path = (char*)rt_malloc(len + 1);
+    if (!copy_path)
+    {
+        return -ENOMEM;
+    }
+
+    copy_len = lwp_get_from_user(copy_path, (void*)file, len);
+    if (copy_len == 0)
+    {
+        rt_free(copy_path);
+        return -EFAULT;
+    }
+    copy_path[copy_len] = '\0';
+#ifdef RT_USING_DFS_V2
+    ret = _SYS_WRAP(dfs_file_lstat(copy_path, &statbuff));
+#else
+    ret = _SYS_WRAP(stat(copy_path, &statbuff));
+#endif
+    rt_free(copy_path);
+
+    if (ret == 0)
+    {
+        lwp_put_to_user(buf, &statbuff, sizeof statbuff);
+    }
+
+    return ret;
+}
+
 sysret_t sys_notimpl(void)
 {
     return -ENOSYS;
@@ -3753,10 +3827,10 @@ sysret_t sys_rmdir(const char *path)
     {
         return -EFAULT;
     }
-    err = unlink(path);
+    err = rmdir(path);
     return (err < 0 ? GET_ERRNO() : err);
 #else
-    int ret = unlink(path);
+    int ret = rmdir(path);
     return (ret < 0 ? GET_ERRNO() : ret);
 #endif
 }
@@ -4244,7 +4318,28 @@ ssize_t sys_readlink(char* path, char *buf, size_t bufsz)
         }
         else
         {
+#ifdef RT_USING_DFS_V2
+            char *link_fn = (char *)rt_malloc(DFS_PATH_MAX);
+            if (link_fn)
+            {
+                err = dfs_file_readlink(copy_path, link_fn, DFS_PATH_MAX);
+                if (err > 0)
+                {
+                    rtn = lwp_put_to_user(buf, link_fn, bufsz > err ? err : bufsz - 1);
+                }
+                else
+                {
+                    rtn = -EIO;
+                }
+                rt_free(link_fn);
+            }
+            else
+            {
+                rtn = -ENOMEM;
+            }
+#else
             rtn = lwp_put_to_user(buf, copy_path, copy_len);
+#endif
         }
         rt_free(copy_path);
         return rtn;
@@ -4265,6 +4360,26 @@ ssize_t sys_readlink(char* path, char *buf, size_t bufsz)
         return -EBADF;
     }
 
+#ifdef RT_USING_DFS_V2
+    {
+        char *fullpath = dfs_dentry_full_path(d->dentry);
+        if (fullpath)
+        {
+            copy_len = strlen(fullpath);
+            if (copy_len > bufsz)
+            {
+                copy_len = bufsz;
+            }
+
+            bufsz = lwp_put_to_user(buf, fullpath, copy_len);
+            rt_free(fullpath);
+        }
+        else
+        {
+            bufsz = 0;
+        }
+    }
+#else
     copy_len = strlen(d->vnode->fullpath);
     if (copy_len > bufsz)
     {
@@ -4272,6 +4387,7 @@ ssize_t sys_readlink(char* path, char *buf, size_t bufsz)
     }
 
     bufsz = lwp_put_to_user(buf, d->vnode->fullpath, copy_len);
+#endif
 
     return bufsz;
 }
@@ -4290,6 +4406,99 @@ sysret_t sys_setaffinity(pid_t pid, size_t size, void *set)
         }
     }
     return -1;
+}
+
+sysret_t sys_getaffinity(pid_t pid, size_t size, void *set)
+{
+#ifdef ARCH_MM_MMU
+    cpu_set_t mask;
+    struct rt_lwp *lwp;
+
+    if (size <= 0 || size > sizeof(cpu_set_t))
+    {
+        return -EINVAL;
+    }
+    if (!lwp_user_accessable(set, size))
+    {
+        return -EFAULT;
+    }
+
+    if (pid == 0) lwp = lwp_self();
+    else lwp = lwp_from_pid(pid);
+    if (!lwp)
+    {
+        return -ESRCH;
+    }
+
+#ifdef RT_USING_SMP
+    if (lwp->bind_cpu == RT_CPUS_NR)    /* not bind */
+    {
+        CPU_ZERO_S(size, &mask);
+    }
+    else /* set bind cpu */
+    {
+        /* TODO: only single-core bindings are now supported of rt-smart */
+        CPU_SET_S(lwp->bind_cpu, size, &mask);
+    }
+#else
+    CPU_SET_S(0, size, &mask);
+#endif
+
+    if (lwp_put_to_user(set, &mask, size) != size)
+    {
+        return -1;
+    }
+
+    return 0;
+#else
+    return -1;
+#endif
+}
+
+sysret_t sys_sysinfo(void *info)
+{
+#ifdef ARCH_MM_MMU
+    struct sysinfo kinfo = {0};
+    rt_size_t total_pages = 0, free_pages = 0;
+
+    if (!lwp_user_accessable(info, sizeof(struct sysinfo)))
+    {
+        return -EFAULT;
+    }
+
+    kinfo.uptime = rt_tick_get_millisecond() / 1000;
+    /* TODO: 1, 5, and 15 minute load averages */
+    kinfo.loads[0] = kinfo.loads[1] = kinfo.loads[2] = rt_object_get_length(RT_Object_Class_Thread);
+    rt_page_get_info(&total_pages, &free_pages);
+    kinfo.totalram = total_pages;
+    kinfo.freeram = free_pages;
+
+    /* TODO: implementation procfs, here is counter the lwp number */
+    struct lwp_avl_struct *pids = lwp_get_pid_ary();
+    for (int index = 0; index < RT_LWP_MAX_NR; index++)
+    {
+        struct rt_lwp *lwp = (struct rt_lwp *)pids[index].data;
+
+        if (lwp)
+        {
+            kinfo.procs++;
+        }
+    }
+
+    rt_page_high_get_info(&total_pages, &free_pages);
+    kinfo.totalhigh = total_pages;
+    kinfo.freehigh = free_pages;
+    kinfo.mem_unit = ARCH_PAGE_SIZE;
+
+    if (lwp_put_to_user(info, &kinfo, sizeof(struct sysinfo)) != sizeof(struct sysinfo))
+    {
+        return -EFAULT;
+    }
+
+    return 0;
+#else
+    return -1;
+#endif
 }
 
 sysret_t sys_sched_setparam(pid_t pid, void *param)
@@ -4901,6 +5110,60 @@ sysret_t sys_umount2(char *__special_file, int __flags)
     return ret;
 }
 
+sysret_t sys_link(const char *existing, const char *new)
+{
+    int ret = -1;
+
+#ifdef ARCH_MM_MMU
+    int err;
+
+    lwp_user_strlen(existing, &err);
+    if (err)
+    {
+        return -EFAULT;
+    }
+
+    lwp_user_strlen(new, &err);
+    if (err)
+    {
+        return -EFAULT;
+    }
+#endif
+#ifdef RT_USING_DFS_V2
+    ret = dfs_file_link(existing, new);
+#else
+    SET_ERRNO(EFAULT);
+#endif
+    return (ret < 0 ? GET_ERRNO() : ret);
+}
+
+sysret_t sys_symlink(const char *existing, const char *new)
+{
+    int ret = -1;
+
+#ifdef ARCH_MM_MMU
+    int err;
+
+    lwp_user_strlen(existing, &err);
+    if (err)
+    {
+        return -EFAULT;
+    }
+
+    lwp_user_strlen(new, &err);
+    if (err)
+    {
+        return -EFAULT;
+    }
+#endif
+#ifdef RT_USING_DFS_V2
+    ret = dfs_file_symlink(existing, new);
+#else
+    SET_ERRNO(EFAULT);
+#endif
+    return (ret < 0 ? GET_ERRNO() : ret);
+}
+
 const static struct rt_syscall_def func_table[] =
 {
     SYSCALL_SIGN(sys_exit),            /* 01 */
@@ -5110,7 +5373,7 @@ const static struct rt_syscall_def func_table[] =
     SYSCALL_SIGN(sys_mq_notify),
     SYSCALL_SIGN(sys_mq_getsetattr),
     SYSCALL_SIGN(sys_mq_close),
-    SYSCALL_SIGN(sys_stat), //TODO should be replaced by sys_lstat if symbolic link are implemented
+    SYSCALL_SIGN(sys_lstat),
     SYSCALL_SIGN(sys_uname),                            /* 170 */
     SYSCALL_SIGN(sys_statfs),
     SYSCALL_SIGN(sys_statfs64),
@@ -5119,6 +5382,10 @@ const static struct rt_syscall_def func_table[] =
     SYSCALL_SIGN(sys_openat),                           /* 175 */
     SYSCALL_SIGN(sys_mount),
     SYSCALL_SIGN(sys_umount2),
+    SYSCALL_SIGN(sys_link),
+    SYSCALL_SIGN(sys_symlink),
+    SYSCALL_SIGN(sys_getaffinity),                      /* 180 */
+    SYSCALL_SIGN(sys_sysinfo),
 };
 
 const void *lwp_get_sys_api(rt_uint32_t number)
