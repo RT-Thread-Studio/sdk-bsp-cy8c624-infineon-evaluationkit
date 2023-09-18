@@ -1,0 +1,21 @@
+import rtconfig
+from building import *
+import os
+
+cwd  = GetCurrentDir()
+path = [cwd,
+        cwd + '/app_bt',
+        cwd + '/app_hw',
+        ]
+src  = Glob('*.c')
+src  += Glob('app_bt/*.c')
+src  += Glob('app_hw/*.c')
+
+group = DefineGroup('btstack_ifx', src, depend = ['BT_SAMPLE_ENABLE_FOR_IFX'], CPPPATH = path)
+
+list = os.listdir(cwd)
+for item in list:
+    if os.path.isfile(os.path.join(cwd, item, 'SConscript')):
+        group = group + SConscript(os.path.join(item, 'SConscript'))
+
+Return('group')
