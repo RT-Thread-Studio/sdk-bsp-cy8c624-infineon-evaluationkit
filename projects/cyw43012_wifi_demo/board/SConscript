@@ -77,7 +77,6 @@ if GetDepend(['BSP_USING_CYW43012_BT']):
         "COMPONENT_PSOC6_02",
         "COMPONENT_WICED_BLE",
         "COMPONENT_WIFI_INTERFACE_SDIO",
-        "CORE_NAME_CM4_0=1",
         "CY8C624ALQI_S2D42",
         "CY_APPNAME_mtb_example_btstack_freertos_hello_sensor",
         "CY_RETARGET_IO_CONVERT_LF_TO_CRLF",
