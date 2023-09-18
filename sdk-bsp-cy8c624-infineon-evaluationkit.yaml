@@ -59,7 +59,7 @@ features_zh:
 - 带有 KitProg3 的板载调试器/编程器
 pkg_type: Board_Support_Packages
 pkg_vendor: RT-Thread
-pkg_version: 1.0.4
+pkg_version: 1.0.5
 example_projects:
 - project_name: cyw43012_wifi_demo
   project_description: cyw43012 wifi示例工程
