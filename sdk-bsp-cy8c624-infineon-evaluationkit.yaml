@@ -60,6 +60,21 @@ features_zh:
 pkg_type: Board_Support_Packages
 pkg_vendor: RT-Thread
 pkg_version: 1.0.4
+example_projects:
+- project_name: cyw43012_wifi_demo
+  project_description: cyw43012 wifi示例工程
+  project_type: rt-thread|@full|@5.0.1
+  builtin_files:
+  - source_path_offset: projects/cyw43012_wifi_demo
+    target_path_offset: ''
+    files_and_folders:
+    - "*"
+  - source_path_offset: ''
+    target_path_offset: ''
+    files_and_folders:
+    - libraries
+    - rt-thread
+  external_files: []
 template_projects:
 - builtin_files:
   - files_and_folders:
@@ -86,7 +101,7 @@ template_projects:
     - template.uvoptx
     - template.uvproj
     - template.uvprojx
-    source_path_offset: project_0
+    source_path_offset: projects/project_0
     target_path_offset: ''
   - source_path_offset: ''
     target_path_offset: ''
