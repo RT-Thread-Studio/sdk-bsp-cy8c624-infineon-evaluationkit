@@ -1,0 +1,12 @@
+[
+ {
+  "name": "WLAN_CYW43012",
+  "path": "/packages/iot/WiFi/wlan_CYW43012",
+  "ver": "v0.0.1"
+ },
+ {
+  "name": "FREERTOS_WRAPPER",
+  "path": "/packages/system/FreeRTOS_Wrapper",
+  "ver": "latest"
+ }
+]

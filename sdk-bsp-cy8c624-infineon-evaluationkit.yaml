@@ -75,6 +75,20 @@ example_projects:
     - libraries
     - rt-thread
   external_files: []
+- project_name: cyw43012_ble_demo
+  project_description: cyw43012 ble示例工程
+  project_type: rt-thread|@full|@5.0.1
+  builtin_files:
+  - source_path_offset: projects/cyw43012_ble_demo
+    target_path_offset: ''
+    files_and_folders:
+    - "*"
+  - source_path_offset: ''
+    target_path_offset: ''
+    files_and_folders:
+    - libraries
+    - rt-thread
+  external_files: []
 template_projects:
 - builtin_files:
   - files_and_folders:
