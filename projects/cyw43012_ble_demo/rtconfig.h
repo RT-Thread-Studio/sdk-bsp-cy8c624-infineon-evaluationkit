@@ -180,7 +180,7 @@
 /* Micrium: Micrium software products porting for RT-Thread */
 
 #define PKG_USING_FREERTOS_WRAPPER
-#define PKG_USING_FREERTOS_WRAPPER_LATEST_VERSION
+#define PKG_USING_FREERTOS_WRAPPER_V100
 
 /* peripheral libraries and drivers */
 
