@@ -142,7 +142,7 @@
 
 #define PKG_USING_BT_CYW43012
 #define BT_SAMPLE_ENABLE_FOR_IFX
-#define PKG_USING_BT_CYW43012_V001
+#define PKG_USING_BT_CYW43012_V002
 
 /* security packages */
 
