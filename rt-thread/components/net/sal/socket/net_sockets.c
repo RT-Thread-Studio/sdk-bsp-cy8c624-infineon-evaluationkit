@@ -264,7 +264,6 @@ int socket(int domain, int type, int protocol)
     }
     else
     {
-        rt_free(d->vnode);
         /* release fd */
         fd_release(fd);
         rt_set_errno(-ENOMEM);
@@ -311,7 +310,6 @@ int closesocket(int s)
         error = -1;
     }
 
-    rt_free(d->vnode);
     /* socket has been closed, delete it from file system fd */
     fd_release(s);
 
