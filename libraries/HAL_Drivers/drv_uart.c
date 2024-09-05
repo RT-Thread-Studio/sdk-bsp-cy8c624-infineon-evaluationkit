@@ -181,8 +181,9 @@ static rt_err_t ifx_configure(struct rt_serial_device *serial, struct serial_con
     RT_ASSERT(serial != RT_NULL);
     struct ifx_uart *uart = (struct ifx_uart *) serial->parent.user_data;
     RT_ASSERT(uart != RT_NULL);
+    static uint8_t init_flag = 0;
 
-    cy_en_scb_uart_status_t result;
+    cy_en_scb_uart_status_t result = CY_RSLT_SUCCESS;
 
     const cyhal_uart_cfg_t uart_config =
     {
@@ -194,11 +195,13 @@ static rt_err_t ifx_configure(struct rt_serial_device *serial, struct serial_con
     };
 
     /* Initialize retarget-io to use the debug UART port */
-    result = cyhal_uart_init(uart->config->uart_obj, uart->config->tx_pin, uart->config->rx_pin, NC, NC, NULL, &uart_config);
+    if (!init_flag)
+        result = cyhal_uart_init(uart->config->uart_obj, uart->config->tx_pin, uart->config->rx_pin, NC, NC, NULL, &uart_config);
 
     if (result == CY_RSLT_SUCCESS)
     {
         result = cyhal_uart_set_baud(uart->config->uart_obj, cfg->baud_rate, NULL);
+        init_flag = 1;
     }
 
     RT_ASSERT(result == RT_EOK);
