@@ -18,7 +18,7 @@ board:
   sale_contact_global: N/A
   small_image: documents/images/small_20230323101130.png
   vendor: Infineon
-  version: 1.0.0
+  version: 1.1.2
 chip:
   chip_name: CY8C624ABZI
   clock_source: HSE
@@ -59,7 +59,7 @@ features_zh:
 - 带有 KitProg3 的板载调试器/编程器
 pkg_type: Board_Support_Packages
 pkg_vendor: RT-Thread
-pkg_version: 1.1.1
+pkg_version: 1.1.2
 example_projects:
 - project_name: cyw43012_wifi_demo
   project_description: cyw43012 wifi示例工程
