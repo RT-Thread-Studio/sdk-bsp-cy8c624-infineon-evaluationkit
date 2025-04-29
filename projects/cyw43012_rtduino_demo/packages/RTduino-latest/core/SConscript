@@ -1,0 +1,108 @@
+import os
+from building import *
+import rtconfig
+
+cwd = GetCurrentDir()
+group = []
+
+CXXFLAGS = ''
+LOCAL_CCFLAGS = ''
+LOCAL_CFLAGS = ''
+LOCAL_CXXFLAGS = ''
+strict_cflags = ''
+strict_cxxflags = ''
+
+if rtconfig.PLATFORM in ['gcc', 'armclang', 'llvm-arm']: # GCC or Keil AC6 or Clang/LLVM
+    CXXFLAGS += ' -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections -Wl,--gc-sections' # reduce resource consumption
+    LOCAL_CFLAGS += ' -std=gnu99' # enable GNU extension. Cannot use -std=c99, some toolchain like RISC-V GCC doesn't support 'asm' key word
+    LOCAL_CXXFLAGS += ' -std=c++11' # support C++11, like non-static data member initializers
+
+    if rtconfig.PLATFORM in ['gcc']: # enable warning (only for GCC)
+        # both C and C++ files
+        strict_cflags += ' -Wall -Wextra' # enable all warning
+        strict_cflags += ' -Wunused -Wunused-parameter -Wunused-function -Wunused-label -Wunused-variable -Wunused-value' # unused warning
+        strict_cflags += ' -Wformat -Wformat-security' # printf/scanf format warning
+        strict_cflags += ' -Warray-bounds -Wuninitialized -Wsequence-point' # memory access warning
+        strict_cflags += ' -Wreturn-type -Wcomment -Wswitch -Wmissing-braces -Wmultichar' # code style warning
+        strict_cflags += ' -Wparentheses -Wlogical-op -Wsequence-point -Wfloat-equal -Wsign-compare -Wpointer-arith' # operation warning -Wconversion
+        strict_cflags += ' -Wimplicit-fallthrough' # implicit fallthrough warning
+        strict_cflags += ' -Wduplicated-cond -Wduplicated-branches -Wunreachable-code' # duplicated code warning
+        strict_cxxflags += strict_cflags
+
+        # only for C files
+        strict_cflags += ' -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes' # function declaration warning
+
+        # only for C++ files
+        # strict_cxxflags += ' -Wreorder -Wnon-virtual-dtor -Woverloaded-virtual' # virtual function warning
+elif rtconfig.PLATFORM in ['armcc']: # Keil AC5
+    CXXFLAGS += ' --gnu --c99' # enable global C99 and GNU extension support for the whole project
+    LOCAL_CCFLAGS += ' --gnu -g -W'
+    LOCAL_CFLAGS += ' --c99' # cannot use --c99 symbol for C++ files, pertically in Keil
+    # LOCAL_CXXFLAGS += ' --cpp11' # support C++11, Keil5 5.38 doesn't support C++11
+else:
+    print('[RTduino] Unsupported rtconfig.PLATFORM: {}'.format(rtconfig.PLATFORM))
+    Return('group')
+
+core_src = Glob('*.c') + Glob('*.cpp') + Glob('avr/*.c')
+
+if GetDepend(['RTDUINO_TINY_MODE']):
+    SrcRemove(core_src, ['Tone.cpp', 'WInterrupts.c', 'wiring_analog.c', 'wiring_digital.c', 'wiring_pulse.c', 'wiring_shift.c'])
+
+group = group + DefineGroup('RTduino-core', core_src,
+                            depend=['PKG_USING_RTDUINO'],
+                            CPPPATH=[cwd],
+                            CPPDEFINES=['ARDUINO=10819', 'ARDUINO_ARCH_RTTHREAD=10000'],
+                            CXXFLAGS=CXXFLAGS,
+                            LOCAL_CCFLAGS=LOCAL_CCFLAGS,
+                            LOCAL_CFLAGS=LOCAL_CFLAGS + strict_cflags,
+                            LOCAL_CXXFLAGS=LOCAL_CXXFLAGS + strict_cxxflags)
+
+# add CFLAGS for arduino_main.cpp
+if not GetDepend(['RTDUINO_NO_SETUP_LOOP']):
+    group = group + DefineGroup('Applications', [],
+                                depend=['PKG_USING_RTDUINO'],
+                                LOCAL_CCFLAGS=LOCAL_CCFLAGS,
+                                LOCAL_CXXFLAGS=LOCAL_CXXFLAGS,
+                                LOCAL_CFLAGS=LOCAL_CFLAGS)
+
+# pinout
+group = group + DefineGroup('RTduino-pinout', [],
+                            depend=['PKG_USING_RTDUINO'],
+                            LOCAL_CCFLAGS=LOCAL_CCFLAGS,
+                            LOCAL_CXXFLAGS=LOCAL_CXXFLAGS,
+                            LOCAL_CFLAGS=LOCAL_CFLAGS)
+
+# buildin libraries
+group = group + DefineGroup('RTduino-libraries-buildin', [],
+                            depend=['PKG_USING_RTDUINO'],
+                            LOCAL_CCFLAGS=LOCAL_CCFLAGS,
+                            LOCAL_CXXFLAGS=LOCAL_CXXFLAGS + strict_cxxflags,
+                            LOCAL_CFLAGS=LOCAL_CFLAGS + strict_cflags)
+
+# user libraries
+group = group + DefineGroup('RTduino-libraries', [],
+                            depend=['PKG_USING_RTDUINO'],
+                            LOCAL_CCFLAGS=LOCAL_CCFLAGS,
+                            LOCAL_CXXFLAGS=LOCAL_CXXFLAGS,
+                            LOCAL_CFLAGS=LOCAL_CFLAGS)
+
+# user .ino sketches
+group = group + DefineGroup('RTduino-sketches', [],
+                            depend=['PKG_USING_RTDUINO'],
+                            LOCAL_CCFLAGS=LOCAL_CCFLAGS,
+                            LOCAL_CXXFLAGS=LOCAL_CXXFLAGS,
+                            LOCAL_CFLAGS=LOCAL_CFLAGS)
+
+# demos
+group = group + DefineGroup('RTduino-demos', [],
+                            depend=['PKG_USING_RTDUINO'],
+                            LOCAL_CCFLAGS=LOCAL_CCFLAGS,
+                            LOCAL_CXXFLAGS=LOCAL_CXXFLAGS,
+                            LOCAL_CFLAGS=LOCAL_CFLAGS)
+
+list = os.listdir(cwd)
+for item in list:
+    if os.path.isfile(os.path.join(cwd, item, 'SConscript')):
+        group = group + SConscript(os.path.join(item, 'SConscript'))
+
+Return('group')

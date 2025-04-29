@@ -1,0 +1,9 @@
+from building import *
+
+cwd  = GetCurrentDir()
+src = ['Servo.cpp']
+inc = [cwd]
+
+group = DefineGroup('RTduino-libraries-buildin', src, depend = ['PKG_USING_RTDUINO', 'RTDUINO_USING_SERVO'], CPPPATH = inc)
+
+Return('group')

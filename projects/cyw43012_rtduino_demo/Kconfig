@@ -1,0 +1,26 @@
+mainmenu "RT-Thread Configuration"
+
+config BSP_DIR
+    string
+    option env="BSP_ROOT"
+    default "."
+
+config RTT_DIR
+    string
+    option env="RTT_ROOT"
+    default "rt-thread"
+
+config PKGS_DIR
+    string
+    option env="PKGS_ROOT"
+    default "packages"
+
+config PLATFORM_DIR
+    string
+    option env="PLATFORM_DIR"
+    default "C:/RT-ThreadStudio/repo/Local/Board_Support_Packages/Infineon/PSOC62-IFX-EVAL-KIT/1.1.3/projects/cyw43012_rtduino_demo/platform"
+
+source "$RTT_DIR/Kconfig"
+source "$PKGS_DIR/Kconfig"
+source "libraries/Kconfig"
+source "board/Kconfig"
