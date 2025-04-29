@@ -1,0 +1,62 @@
+[
+ {
+  "path": "/packages/iot/WiFi/rw007", 
+  "ver": "latest", 
+  "name": "RW007"
+ }, 
+ {
+  "path": "/packages/system/perf_counter", 
+  "ver": "v2.2.4.1", 
+  "name": "PERF_COUNTER"
+ }, 
+ {
+  "path": "/packages/arduino/RTduino", 
+  "ver": "latest", 
+  "name": "RTDUINO"
+ }, 
+ {
+  "path": "/packages/arduino/projects/RTduino-SensorFusion-Shield", 
+  "ver": "latest", 
+  "name": "ARDUINO_RTDUINO_SENSORFUSION_SHIELD"
+ }, 
+ {
+  "path": "/packages/arduino/sensors/Adafruit-Sensor", 
+  "ver": "latest", 
+  "name": "ARDUINO_ADAFRUIT_SENSOR"
+ }, 
+ {
+  "path": "/packages/arduino/sensors/Adafruit-AHTX0", 
+  "ver": "latest", 
+  "name": "ARDUINO_ADAFRUIT_AHTX0"
+ }, 
+ {
+  "path": "/packages/arduino/sensors/Adafruit-BMP280", 
+  "ver": "latest", 
+  "name": "ARDUINO_ADAFRUIT_BMP280"
+ }, 
+ {
+  "path": "/packages/arduino/sensors/Adafruit-ADXL345", 
+  "ver": "latest", 
+  "name": "ARDUINO_ADAFRUIT_ADXL345"
+ }, 
+ {
+  "path": "/packages/arduino/sensors/Adafruit-SHT31", 
+  "ver": "latest", 
+  "name": "ARDUINO_ADAFRUIT_SHT31"
+ }, 
+ {
+  "path": "/packages/arduino/display/Adafruit-GFX-Library", 
+  "ver": "latest", 
+  "name": "ARDUINO_ADAFRUIT_GFX_LIBRARY"
+ }, 
+ {
+  "path": "/packages/arduino/display/Adafruit-SSD1306", 
+  "ver": "latest", 
+  "name": "ARDUINO_ADAFRUIT_SSD1306"
+ }, 
+ {
+  "path": "/packages/arduino/signalio/Adafruit-BusIO", 
+  "ver": "latest", 
+  "name": "ARDUINO_ADAFRUIT_BUSIO"
+ }
+]

@@ -1,0 +1,12 @@
+from building import *
+import os
+
+cwd     = GetCurrentDir()
+group   = []
+CPPPATH = [cwd]
+
+src = Glob('*.cpp')
+
+group = group + DefineGroup('qmc5883', src, depend = ['PKG_RTDUINO_SENSORFUSION_SHIELD_QMC5883L_DEMO'], CPPPATH = CPPPATH)
+
+Return('group')

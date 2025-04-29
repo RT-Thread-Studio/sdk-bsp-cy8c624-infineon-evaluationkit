@@ -1,0 +1,12 @@
+from building import *
+import os
+
+cwd     = GetCurrentDir()
+group   = []
+CPPPATH = [cwd]
+
+src = Glob('*.cpp')
+
+group = group + DefineGroup('at24c256', src, depend = ['PKG_RTDUINO_SENSORFUSION_SHIELD_AT24C256_DEMO'], CPPPATH = CPPPATH)
+
+Return('group')
