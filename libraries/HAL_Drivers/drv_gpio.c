@@ -7,6 +7,7 @@
  * Date           Author            Notes
  * 2022-07-1      Rbb666            first version
  * 2023-05-25	  Rbb666            fix pin irq problem
+ * 2025-04-24     Passionate0424    fix ifx_pin_irq_enable
  */
 
 #include "drv_gpio.h"
@@ -275,7 +276,7 @@ static rt_err_t ifx_pin_irq_enable(struct rt_device *device, rt_base_t pin,
         irqmap = &pin_irq_map[gpio_port];
 
 #if !defined(COMPONENT_CAT1C)
-        IRQn_Type irqn = (IRQn_Type)(irqmap->irqno + PORT_GET(irqmap->port));
+        IRQn_Type irqn = irqmap->irqno;
 #endif
         irq_cb_data[irqn].callback = irq_callback;
         irq_cb_data[irqn].callback_arg = (rt_uint16_t *)&pin_irq_map[gpio_port].port;
@@ -310,10 +311,9 @@ static rt_err_t ifx_pin_irq_enable(struct rt_device *device, rt_base_t pin,
     {
         level = rt_hw_interrupt_disable();
 
-        Cy_GPIO_Port_Deinit(CYHAL_GET_PORTADDR(gpio_pin));
-
+        irqmap = &pin_irq_map[gpio_port];
 #if !defined(COMPONENT_CAT1C)
-        IRQn_Type irqn = (IRQn_Type)(irqmap->irqno + PORT_GET(irqmap->port));
+        IRQn_Type irqn = irqmap->irqno;
 #endif
         _cyhal_irq_disable(irqn);
 
