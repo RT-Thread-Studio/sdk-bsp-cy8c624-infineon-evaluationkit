@@ -7,6 +7,7 @@
  * Date           Author          Notes
  * 2022-06-29     Rbb666          first version
  * 2025-05-11     Passionate0424  fix ifx_configure
+ * 2025-05-12     Passionate0424  update ifx_control
  */
 
 #include <rtthread.h>
@@ -216,7 +217,7 @@ static rt_err_t ifx_control(struct rt_serial_device *serial, int cmd, void *arg)
     switch (cmd)
     {
     case RT_DEVICE_CTRL_CLR_INT:
-
+        ifx_control
         break;
 
     case RT_DEVICE_CTRL_SET_INT:
