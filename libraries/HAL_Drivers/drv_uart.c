@@ -217,7 +217,7 @@ static rt_err_t ifx_control(struct rt_serial_device *serial, int cmd, void *arg)
     switch (cmd)
     {
     case RT_DEVICE_CTRL_CLR_INT:
-        ifx_control
+        NVIC_DisableIRQ(uart->config->UART_SCB_IRQ_cfg->intrSrc);
         break;
 
     case RT_DEVICE_CTRL_SET_INT:
