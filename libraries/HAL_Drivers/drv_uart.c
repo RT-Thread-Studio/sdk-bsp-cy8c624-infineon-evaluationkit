@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  * Change Logs:
- * Date           Author       Notes
- * 2022-06-29     Rbb666       first version
+ * Date           Author          Notes
+ * 2022-06-29     Rbb666          first version
+ * 2025-05-11     Passionate0424  fix ifx_configure
+ * 2025-05-12     Passionate0424  update ifx_control
  */
 
 #include <rtthread.h>
@@ -181,7 +183,6 @@ static rt_err_t ifx_configure(struct rt_serial_device *serial, struct serial_con
     RT_ASSERT(serial != RT_NULL);
     struct ifx_uart *uart = (struct ifx_uart *) serial->parent.user_data;
     RT_ASSERT(uart != RT_NULL);
-    static uint8_t init_flag = 0;
 
     cy_en_scb_uart_status_t result = CY_RSLT_SUCCESS;
 
@@ -195,13 +196,11 @@ static rt_err_t ifx_configure(struct rt_serial_device *serial, struct serial_con
     };
 
     /* Initialize retarget-io to use the debug UART port */
-    if (!init_flag)
-        result = cyhal_uart_init(uart->config->uart_obj, uart->config->tx_pin, uart->config->rx_pin, NC, NC, NULL, &uart_config);
+    result = cyhal_uart_init(uart->config->uart_obj, uart->config->tx_pin, uart->config->rx_pin, NC, NC, NULL, &uart_config);
 
     if (result == CY_RSLT_SUCCESS)
     {
         result = cyhal_uart_set_baud(uart->config->uart_obj, cfg->baud_rate, NULL);
-        init_flag = 1;
     }
 
     RT_ASSERT(result == RT_EOK);
@@ -218,7 +217,7 @@ static rt_err_t ifx_control(struct rt_serial_device *serial, int cmd, void *arg)
     switch (cmd)
     {
     case RT_DEVICE_CTRL_CLR_INT:
-
+        NVIC_DisableIRQ(uart->config->UART_SCB_IRQ_cfg->intrSrc);
         break;
 
     case RT_DEVICE_CTRL_SET_INT:
