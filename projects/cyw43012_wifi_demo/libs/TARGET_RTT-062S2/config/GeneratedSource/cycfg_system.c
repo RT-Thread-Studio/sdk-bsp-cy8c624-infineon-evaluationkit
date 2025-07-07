@@ -5,11 +5,11 @@
 * System configuration
 * This file was automatically generated and should not be modified.
 * Configurator Backend 3.0.0
-* device-db 4.3.0.3855
-* mtb-pdl-cat1 3.4.0.24948
+* device-db 4.26.0.8600
+* mtb-pdl-cat1 3.16.0.40964
 *
 ********************************************************************************
-* Copyright 2023 Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2025 Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -58,6 +58,18 @@
 #define CY_CFG_SYSCLK_CLKHF0_DIVIDER CY_SYSCLK_CLKHF_NO_DIVIDE
 #define CY_CFG_SYSCLK_CLKHF0_FREQ_MHZ 100UL
 #define CY_CFG_SYSCLK_CLKHF0_CLKPATH CY_SYSCLK_CLKHF_IN_CLKPATH0
+#define CY_CFG_SYSCLK_CLKHF1_ENABLED 1
+#define CY_CFG_SYSCLK_CLKHF1_DIVIDER CY_SYSCLK_CLKHF_NO_DIVIDE
+#define CY_CFG_SYSCLK_CLKHF1_FREQ_MHZ 100UL
+#define CY_CFG_SYSCLK_CLKHF1_CLKPATH CY_SYSCLK_CLKHF_IN_CLKPATH0
+#define CY_CFG_SYSCLK_CLKHF3_ENABLED 1
+#define CY_CFG_SYSCLK_CLKHF3_DIVIDER CY_SYSCLK_CLKHF_NO_DIVIDE
+#define CY_CFG_SYSCLK_CLKHF3_FREQ_MHZ 100UL
+#define CY_CFG_SYSCLK_CLKHF3_CLKPATH CY_SYSCLK_CLKHF_IN_CLKPATH0
+#define CY_CFG_SYSCLK_CLKHF4_ENABLED 1
+#define CY_CFG_SYSCLK_CLKHF4_DIVIDER CY_SYSCLK_CLKHF_NO_DIVIDE
+#define CY_CFG_SYSCLK_CLKHF4_FREQ_MHZ 100UL
+#define CY_CFG_SYSCLK_CLKHF4_CLKPATH CY_SYSCLK_CLKHF_IN_CLKPATH0
 #define CY_CFG_SYSCLK_ILO_ENABLED 1
 #define CY_CFG_SYSCLK_ILO_HIBERNATE true
 #define CY_CFG_SYSCLK_IMO_ENABLED 1
@@ -89,6 +101,13 @@
 #define CY_CFG_SYSCLK_PLL0_LF_MODE false
 #define CY_CFG_SYSCLK_PLL0_OUTPUT_MODE CY_SYSCLK_FLLPLL_OUTPUT_AUTO
 #define CY_CFG_SYSCLK_PLL0_OUTPUT_FREQ 48000000
+#define CY_CFG_SYSCLK_PLL1_ENABLED 1
+#define CY_CFG_SYSCLK_PLL1_FEEDBACK_DIV 25
+#define CY_CFG_SYSCLK_PLL1_REFERENCE_DIV 1
+#define CY_CFG_SYSCLK_PLL1_OUTPUT_DIV 2
+#define CY_CFG_SYSCLK_PLL1_LF_MODE false
+#define CY_CFG_SYSCLK_PLL1_OUTPUT_MODE CY_SYSCLK_FLLPLL_OUTPUT_AUTO
+#define CY_CFG_SYSCLK_PLL1_OUTPUT_FREQ 100000000
 #define CY_CFG_SYSCLK_CLKSLOW_ENABLED 1
 #define CY_CFG_SYSCLK_CLKSLOW_DIVIDER 0
 #define CY_CFG_SYSCLK_CLKTIMER_ENABLED 1
@@ -165,6 +184,14 @@
         .feedbackDiv = 30,
         .referenceDiv = 1,
         .outputDiv = 5,
+        .lfMode = false,
+        .outputMode = CY_SYSCLK_FLLPLL_OUTPUT_AUTO,
+    };
+    static const cy_stc_pll_manual_config_t srss_0_clock_0_pll_1_pllConfig = 
+    {
+        .feedbackDiv = 25,
+        .referenceDiv = 1,
+        .outputDiv = 2,
         .lfMode = false,
         .outputMode = CY_SYSCLK_FLLPLL_OUTPUT_AUTO,
     };
@@ -682,6 +709,24 @@ __STATIC_INLINE void Cy_SysClk_ClkAltSysTickInit()
         Cy_SysClk_ClkHfSetSource(0U, CY_CFG_SYSCLK_CLKHF0_CLKPATH);
         Cy_SysClk_ClkHfSetDivider(0U, CY_SYSCLK_CLKHF_NO_DIVIDE);
     }
+    __STATIC_INLINE void Cy_SysClk_ClkHf1Init()
+    {
+        Cy_SysClk_ClkHfSetSource(CY_CFG_SYSCLK_CLKHF1, CY_CFG_SYSCLK_CLKHF1_CLKPATH);
+        Cy_SysClk_ClkHfSetDivider(CY_CFG_SYSCLK_CLKHF1, CY_SYSCLK_CLKHF_NO_DIVIDE);
+        Cy_SysClk_ClkHfEnable(CY_CFG_SYSCLK_CLKHF1);
+    }
+    __STATIC_INLINE void Cy_SysClk_ClkHf3Init()
+    {
+        Cy_SysClk_ClkHfSetSource(CY_CFG_SYSCLK_CLKHF3, CY_CFG_SYSCLK_CLKHF3_CLKPATH);
+        Cy_SysClk_ClkHfSetDivider(CY_CFG_SYSCLK_CLKHF3, CY_SYSCLK_CLKHF_NO_DIVIDE);
+        Cy_SysClk_ClkHfEnable(CY_CFG_SYSCLK_CLKHF3);
+    }
+    __STATIC_INLINE void Cy_SysClk_ClkHf4Init()
+    {
+        Cy_SysClk_ClkHfSetSource(CY_CFG_SYSCLK_CLKHF4, CY_CFG_SYSCLK_CLKHF4_CLKPATH);
+        Cy_SysClk_ClkHfSetDivider(CY_CFG_SYSCLK_CLKHF4, CY_SYSCLK_CLKHF_NO_DIVIDE);
+        Cy_SysClk_ClkHfEnable(CY_CFG_SYSCLK_CLKHF4);
+    }
     __STATIC_INLINE void Cy_SysClk_IloInit()
     {
         /* The WDT is unlocked in the default startup code */
@@ -728,6 +773,17 @@ __STATIC_INLINE void Cy_SysClk_ClkAltSysTickInit()
             cycfg_ClockStartupError(CY_CFG_SYSCLK_PLL_ERROR);
         }
         if (CY_SYSCLK_SUCCESS != Cy_SysClk_PllEnable(1U, 10000u))
+        {
+            cycfg_ClockStartupError(CY_CFG_SYSCLK_PLL_ERROR);
+        }
+    }
+    __STATIC_INLINE void Cy_SysClk_Pll1Init()
+    {
+        if (CY_SYSCLK_SUCCESS != Cy_SysClk_PllManualConfigure(2U, &srss_0_clock_0_pll_1_pllConfig))
+        {
+            cycfg_ClockStartupError(CY_CFG_SYSCLK_PLL_ERROR);
+        }
+        if (CY_SYSCLK_SUCCESS != Cy_SysClk_PllEnable(2U, 10000u))
         {
             cycfg_ClockStartupError(CY_CFG_SYSCLK_PLL_ERROR);
         }

@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "cybsp_hw_config.h"
 #include "cybsp_doc.h"
 
 #if defined(__cplusplus)

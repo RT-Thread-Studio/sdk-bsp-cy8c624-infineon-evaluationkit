@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file system_psoc6.h
-* \version 2.95.1
+* \version 2.100
 *
 * \brief Device system header file.
 *
@@ -334,6 +334,11 @@
 *       <th>Reason for Change</th>
 *   </tr>
 *   <tr>
+*       <td rowspan="1">2.100</td>
+*       <td>Added support for TRAVEO&trade; II Body Entry devices.</td>
+*       <td>Code enhancement and support for new devices.</td>
+*   </tr> 
+*   <tr>
 *       <td rowspan="1">2.95.1</td>
 *       <td>Restructured documentation.</td>
 *       <td>Documentation update.</td>
@@ -341,7 +346,7 @@
 *   <tr>
 *       <td rowspan="1">2.95</td>
 *       <td>Update FPU enable function with CMSIS macros to disable/enable interrupts</td>
-*       <td>Move to stadnard inline CMSIS ARM macros</td>
+*       <td>Move to standard inline CMSIS ARM macros</td>
 *   </tr>
 *   <tr>
 *       <td rowspan="2">2.91</td>

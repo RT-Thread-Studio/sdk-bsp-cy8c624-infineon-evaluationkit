@@ -5,11 +5,11 @@
 * Peripheral Hardware Block configuration
 * This file was automatically generated and should not be modified.
 * Configurator Backend 3.0.0
-* device-db 4.3.0.3855
-* mtb-pdl-cat1 3.4.0.24948
+* device-db 4.26.0.8600
+* mtb-pdl-cat1 3.16.0.40964
 *
 ********************************************************************************
-* Copyright 2023 Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2025 Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.
 * SPDX-License-Identifier: Apache-2.0
 *

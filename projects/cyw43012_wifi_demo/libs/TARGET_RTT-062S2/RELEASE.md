@@ -1,10 +1,12 @@
-# CY8CKIT-062S2-43012 BSP Release Notes
-The CY8CKIT-062S2-43012 PSoC™ 6S2 Wi-Fi BT Pioneer Kit is a low-cost hardware platform that enables design and debug of PSoC™ 6 MCUs. It comes with a Murata 1LV Module (CYW43012 Wi-Fi + Bluetooth Combo Chip), industry-leading CAPSENSE™ for touch buttons and slider, on-board debugger/programmer with KitProg3, microSD card interface, 512-Mb Quad-SPI NOR flash, PDM-PCM microphone interface.
+# CY8CEVAL-062S2 BSP Release Notes
+The CY8CEVAL-062S2 PSoC™ 62S2 Evaluation Kit enables you to evaluate and develop applications using PSoC™ 62 MCU. The PSoC™ 62S2 evaluation kit features an M.2 interface that enables you to connect the supported M.2 radio cards based on AIROC™ Wi-Fi/Bluetooth combo devices. It comes with industry-leading CAPSENSE™ for touch buttons and slider, on-board debugger/programmer with KitProg3, microSD card interface, 512-Mb Quad-SPI NOR flash, PDM-PCM microphone interface, mikroBUS add-on board interface for peripheral expansion, OPTIGA Trust M device.     
+**Note:**
+This BSP does not support Wi-Fi/BT Connectivity examples. To run Wi-Fi/Bluetooth Connectivity examples on this kit, choose a BSP with the appropriate connectivity M.2 module.
 
 NOTE: BSPs are versioned by family. This means that version 1.2.0 of any BSP in a family (eg: PSoC™ 6) will have the same software maturity level. However, not all updates are necessarily applicable for each BSP in the family so not all version numbers will exist for each board. Additionally, new BSPs may not start at version 1.0.0. In the event of adding a common feature across all BSPs, the libraries are assigned the same version number. For example if BSP_A is at v1.3.0 and BSP_B is at v1.2.0, the event will trigger a version update to v1.4.0 for both BSP_A and BSP_B. This allows the common feature to be tracked in a consistent way.
 
 ### What's Included?
-The CY8CKIT-062S2-43012 library includes the following:
+The CY8CEVAL-062S2 library includes the following:
 * BSP specific makefile to configure the build process for the board
 * cybsp.c/h files to initialize the board and any system peripherals
 * cybsp_types.h file describing basic board setup
@@ -15,6 +17,11 @@ The CY8CKIT-062S2-43012 library includes the following:
 * API documentation
 
 ### What Changed?
+#### v4.3.1
+Updated the README file for CY8CEVAL-062S2-MUR-43439M2.
+#### v4.3.0
+* Update companion device pin configuration to align with requirements of MUR-43439 and LAI-43439 M.2 module.
+* Updated the README file for CY8CEVAL-062S2, CY8CEVAL-062S2-LAI-43439M2, CY8CEVAL-062S2-LAI-4373M2, CY8CEVAL-062S2-MUR-4373M2, and CY8CEVAL-062S2-MUR-4373EM2 BSPs to remove the M.2 radio module detail from kit contents section.
 #### v4.2.0
 * Updated linker scripts and startup code to align with mtb-pdl-cat1 v3.4.0
 * Added functionality to enable BSP Assistant chip flow
@@ -82,25 +89,25 @@ NOTE: This requires psoc6hal 1.2.0 or later
 * Initial release
 
 ### Supported Software and Tools
-This version of the CY8CKIT-062S2-43012 BSP was validated for compatibility with the following Software and Tools:
+This version of the CY8CEVAL-062S2 BSP was validated for compatibility with the following Software and Tools:
 
 | Software and Tools                        | Version |
 | :---                                      | :----:  |
-| ModusToolbox™ Software Environment        | 3.1.0   |
-| GCC Compiler                              | 12.2.1  |
+| ModusToolbox™ Software Environment        | 3.0.0   |
+| GCC Compiler                              | 11.3.1  |
 | IAR Compiler                              | 9.30.1  |
 | ARM Compiler                              | 6.16    |
 
 Minimum required ModusToolbox™ Software Environment: v3.0.0
 
 ### More information
-* [CY8CKIT-062S2-43012 BSP API Reference Manual][api]
-* [CY8CKIT-062S2-43012 Documentation](http://www.cypress.com/CY8CKIT-062S2-43012)
+* [CY8CEVAL-062S2 BSP API Reference Manual][api]
+* [CY8CEVAL-062S2 Documentation](https://www.cypress.com/documentation/development-kitsboards/psoc-62s2-evaluation-kit-cy8ceval-062s2)
 * [Cypress Semiconductor, an Infineon Technologies Company](http://www.cypress.com)
 * [Infineon GitHub](https://github.com/infineon)
 * [ModusToolbox™](https://www.cypress.com/products/modustoolbox-software-environment)
 
-[api]: https://infineon.github.io/TARGET_CY8CKIT-062S2-43012/html/modules.html
+[api]: https://infineon.github.io/TARGET_CY8CEVAL-062S2/html/modules.html
 
 ---
 © Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation, 2019-2022.
