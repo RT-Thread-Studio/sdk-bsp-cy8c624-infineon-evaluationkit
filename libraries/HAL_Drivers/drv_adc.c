@@ -19,7 +19,7 @@
 #define LOG_TAG             "drv.adc"
 #include <drv_log.h>
 
-#define VPLUS_CHANNEL_0     (P10_0)
+static const cyhal_gpio_t adc_gpio[] = {P10_0, P10_1, P10_2, P10_3, P10_4, P10_5};
 
 struct ifx_adc
 {
@@ -52,8 +52,13 @@ static rt_err_t ifx_adc_enabled(struct rt_adc_device *device, rt_uint32_t channe
 
     if (enabled)
     {
-        /* Initialize ADC. The ADC block which can connect to pin 10[0] is selected */
-        result = cyhal_adc_init(&adc_obj, VPLUS_CHANNEL_0, NULL);
+        if (channel >= sizeof(adc_gpio) / sizeof(adc_gpio[0]))
+        {
+            LOG_E("ADC channel %d is out of range", channel);
+            return -RT_EINVAL;
+        }
+
+        result = cyhal_adc_init(&adc_obj, adc_gpio[channel], NULL);
 
         if (result != RT_EOK)
         {
@@ -61,8 +66,8 @@ static rt_err_t ifx_adc_enabled(struct rt_adc_device *device, rt_uint32_t channe
             return -RT_ENOSYS;
         }
 
-        /* Initialize a channel 0 and configure it to scan P10_0 in single ended mode. */
-        result  = cyhal_adc_channel_init_diff(adc_ch, &adc_obj, VPLUS_CHANNEL_0,
+        /* Initialize the channel and configure it to scan the selected pin in single ended mode. */
+        result  = cyhal_adc_channel_init_diff(adc_ch, &adc_obj, adc_gpio[channel],
                                               CYHAL_ADC_VNEG, &channel_config);
 
         if (result != RT_EOK)
@@ -76,14 +81,14 @@ static rt_err_t ifx_adc_enabled(struct rt_adc_device *device, rt_uint32_t channe
 
         if (result != RT_EOK)
         {
-            printf("ADC configuration update failed. Error: %u\n", result);
+            LOG_E("ADC configuration update failed. Error: %u\n", result);
             return -RT_ENOSYS;
         }
     }
     else
     {
-        cyhal_adc_free(&adc_obj);
         cyhal_adc_channel_free(adc_ch);
+        cyhal_adc_free(&adc_obj);
     }
 
     return RT_EOK;
@@ -119,7 +124,7 @@ static int rt_hw_adc_init(void)
         /* register ADC device */
         if (rt_hw_adc_register(&ifx_adc_obj[i].ifx_adc_device, ifx_adc_obj[i].name, &at_adc_ops, ifx_adc_obj[i].adc_ch) == RT_EOK)
         {
-            LOG_D("%s register success", at32_adc_obj[i].name);
+            LOG_D("%s register success", ifx_adc_obj[i].name);
         }
         else
         {
