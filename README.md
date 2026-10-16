@@ -43,13 +43,13 @@
 
 * 点击 IDE 左上角的构建选项进行工程的编译。
 
-  ![](project_0\figures\studio3-build.png)
+  ![](projects/project_0\figures\studio3-build.png)
 
 * 当编译无错误警告时，点击 `Debug` 或 `Download` 选项进行调试/下载。
 
   注：若点击下载并下载成功后串口终端无显示信息，请手动按下复位按键进行重启运行。
 
-  ![](project_0\figures\studio4-download.png)
+  ![](projects/project_0\figures\studio4-download.png)
 
 ### 运行结果
 
